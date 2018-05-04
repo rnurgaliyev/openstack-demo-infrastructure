@@ -1,0 +1,9 @@
+---
+
+- hosts: jumphost
+  gather_facts: False
+  becouse: False
+  tasks:
+    - name: Install python for ansible
+      raw: test -e /usr/bin/python || ( sudo apt-get update && sudo apt-get -y -q install python-minimal ) 
+      changed_when: False
