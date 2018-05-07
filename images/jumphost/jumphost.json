@@ -1,0 +1,28 @@
+{
+    "builders": [
+      {
+        "type": "openstack",
+        "domain_name": "Default",
+        "flavor": "m1.micro",
+        "image_name": "imple-jumphost",
+        "source_image_name": "Original Ubuntu Bionic 18.04 LTS",
+        "floating_ip_pool": "ext-net",
+        "security_groups": "jumphost",
+        "ssh_username": "ubuntu"
+      }
+    ],
+    "provisioners": [
+      {
+        "type": "ansible",
+        "playbook_file": "../../automation/jumphost.yml",
+        "groups": [ "jumphost" ],
+        "inventory_directory": "../../automation",
+        "ansible_env_vars": [ 
+          "ANSIBLE_HOST_KEY_CHECKING=False", 
+          "ANSIBLE_NOCOLOR=True", 
+          "ANSIBLE_RETRY_FILES_ENABLED=False",
+          "ANSIBLE_SSH_ARGS='-o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o AddKeysToAgent=no'"
+        ]
+      }
+    ]
+  }
