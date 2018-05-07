@@ -1,0 +1,17 @@
+---
+
+- hosts: javadev
+  gather_facts: False
+  become: False
+  tasks:
+    - name: Install python for ansible
+      raw: test -e /usr/bin/python || ( sudo apt-get update && sudo apt-get -y -q install python-minimal ) 
+      changed_when: False
+
+- hosts: javadev
+  become: True
+  roles:
+    - role: common
+      tags: [ "common" ]
+    - role: oracle-java
+      tags: [ "java" ]
