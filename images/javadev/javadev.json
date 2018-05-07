@@ -1,0 +1,28 @@
+{
+  "builders": [
+    {
+      "type": "openstack",
+      "domain_name": "Default",
+      "flavor": "m1.small",
+      "image_name": "imple-javadev",
+      "source_image_name": "Original Ubuntu Xenial 16.04 LTS",
+      "floating_ip_pool": "ext-net",
+      "security_groups": "jumphost",
+      "ssh_username": "ubuntu"
+    }
+  ],
+  "provisioners": [
+    {
+      "type": "ansible",
+      "playbook_file": "../../automation/javadev.yml",
+      "groups": [ "javadev" ],
+      "inventory_directory": "../../automation",
+      "ansible_env_vars": [ 
+        "ANSIBLE_HOST_KEY_CHECKING=False", 
+        "ANSIBLE_NOCOLOR=True", 
+        "ANSIBLE_SSH_ARGS='-o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o AddKeysToAgent=no'",
+        "ANSIBLE_CONFIG='../../automation/ansible.cfg'"
+      ]
+    }
+  ]
+}

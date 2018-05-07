@@ -1,13 +1,5 @@
 ################################################################################
 ################################################################################
-resource "openstack_compute_keypair_v2" "imple" {
-  name       = "imple"
-  public_key = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDLOH1KvssMlw6fMGO9XGfq+fiPjQkyBnXM5fVcBuHuAMRMxJNomdNpjps0gjypA3RNFgdoTi2fDSa7oG2k2fCLPCFbcXArOw7hgffHXaGlZmJzOxL8TtZrkwKo4z1UEunmaJ5gHAXTrl8KH+dmq0mrZYsit0SIouast5FDDF6kCASzgxr0Jz4gfwKBH03tBvDiSSpmMg1VgF6EFJwtGYk6JHt0lgYbj9RkBDhl3zyDL67YZuBfuCR5JXpAOKjXEtTZdfezFIqhH/iCCreDPct4I78p0sRUaduSmh/hL0UJ4tC2NoDuMfoIXJqwsFSRcgslh/UmQEY2TgoFcjKvS69Z"
-}
-
-data "openstack_networking_network_v2" "ext_net" {
-  name = "ext-net"
-}
 
 data "openstack_images_image_v2" "jumphost" {
   name        = "imple-jumphost"
@@ -36,7 +28,7 @@ resource "openstack_networking_subnet_v2" "live" {
 }
 
 # Router port
-resource "openstack_networking_router_interface_v2" "port_test" {
+resource "openstack_networking_router_interface_v2" "port_router_live" {
   router_id = "${openstack_networking_router_v2.live.id}"
   subnet_id = "${openstack_networking_subnet_v2.live.id}"
 }
