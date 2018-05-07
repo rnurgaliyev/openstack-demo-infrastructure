@@ -1,0 +1,10 @@
+---
+
+- name: Configure users and groups
+  include_tasks: users.yml
+
+- name: Configure sudo
+  include_tasks: sudo.yml
+
+- name: Configure and install upgrades
+  include_tasks: updates.yml

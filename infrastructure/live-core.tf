@@ -9,8 +9,8 @@ data "openstack_networking_network_v2" "ext_net" {
   name = "ext-net"
 }
 
-data "openstack_images_image_v2" "bionic" {
-  name        = "Original Ubuntu Bionic 18.04 LTS"
+data "openstack_images_image_v2" "jumphost" {
+  name        = "imple-jumphost"
   most_recent = true
 }
 
@@ -64,7 +64,7 @@ resource "openstack_compute_secgroup_v2" "jumphost" {
 
 resource "openstack_compute_instance_v2" "jumphost" {
   name        = "Jumphost"
-  image_id    = "${data.openstack_images_image_v2.bionic.id}"
+  image_id    = "${data.openstack_images_image_v2.jumphost.id}"
   flavor_name = "m1.micro"
   key_pair    = "${openstack_compute_keypair_v2.imple.name}"
 

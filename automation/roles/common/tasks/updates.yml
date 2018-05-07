@@ -1,0 +1,15 @@
+---
+
+- name: Upgrade all packages to the latest version
+  apt:
+    update_cache: yes
+    cache_valid_time: 3600
+    upgrade: yes
+
+- name: Install apt-cron
+  apt:
+    update_cache: yes
+    cache_valid_time: 3600
+    name: cron-apt
+    state: latest
+

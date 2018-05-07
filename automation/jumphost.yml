@@ -2,8 +2,16 @@
 
 - hosts: jumphost
   gather_facts: False
-  becouse: False
+  become: False
   tasks:
     - name: Install python for ansible
       raw: test -e /usr/bin/python || ( sudo apt-get update && sudo apt-get -y -q install python-minimal ) 
       changed_when: False
+
+- hosts: jumphost
+  become: True
+  roles:
+    - role: common
+      tags: [ "common" ]
+    - role: fail2ban
+      tags: [ "fail2ban" ]
