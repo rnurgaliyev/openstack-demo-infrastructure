@@ -13,5 +13,7 @@
   roles:
     - role: common
       tags: [ "common" ]
+    - role: devel
+      tags: [ "devel" ]
     - role: oracle-java
-      tags: [ "java" ]
+      tags: [ "devel", "java" ]
