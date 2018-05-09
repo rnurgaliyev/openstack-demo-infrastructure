@@ -1,6 +1,6 @@
 ---
 
-- hosts: javadev
+- hosts: devenv-java
   gather_facts: False
   become: False
   tasks:
@@ -8,7 +8,7 @@
       raw: test -e /usr/bin/python || ( sudo apt-get update && sudo apt-get -y -q install python-minimal ) 
       changed_when: False
 
-- hosts: javadev
+- hosts: devenv-java
   become: True
   roles:
     - role: common

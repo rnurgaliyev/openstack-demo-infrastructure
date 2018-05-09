@@ -2,7 +2,7 @@
 ################################################################################
 
 data "openstack_images_image_v2" "jumphost" {
-  name        = "imple-jumphost"
+  name        = "jumphost"
   most_recent = true
 }
 

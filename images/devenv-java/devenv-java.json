@@ -4,10 +4,10 @@
       "type": "openstack",
       "domain_name": "Default",
       "flavor": "m1.small",
-      "image_name": "imple-javadev",
+      "image_name": "devenv-java",
       "source_image_name": "Original Ubuntu Xenial 16.04 LTS",
       "floating_ip_pool": "ext-net",
-      "security_groups": "jumphost",
+      "security_groups": "ssh_only",
       "ssh_username": "ubuntu",
       "networks": [ "88b70345-f2cf-49ae-b220-cb1cab91efb2" ]
     }
@@ -15,8 +15,8 @@
   "provisioners": [
     {
       "type": "ansible",
-      "playbook_file": "../../automation/javadev.yml",
-      "groups": [ "javadev" ],
+      "playbook_file": "../../automation/devenv-java.yml",
+      "groups": [ "devenv-java" ],
       "inventory_directory": "../../automation",
       "extra_arguments": [ "-vv" ],
       "ansible_env_vars": [ 
