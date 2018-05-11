@@ -27,3 +27,33 @@ resource "openstack_networking_router_interface_v2" "port_router_testing" {
   router_id = "${openstack_networking_router_v2.testing.id}"
   subnet_id = "${openstack_networking_subnet_v2.testing.id}"
 }
+
+# Security group used for testing stuff
+resource "openstack_compute_secgroup_v2" "testing" {
+  name        = "testing"
+  description = "Security Group for testing and vagrant instances"
+
+  # SSH from all the world
+  rule {
+    from_port   = 22
+    to_port     = 22
+    ip_protocol = "tcp"
+    cidr        = "0.0.0.0/0"
+  }
+
+  # ICMP from all the world
+  rule {
+    from_port   = -1
+    to_port     = -1
+    ip_protocol = "icmp"
+    cidr        = "0.0.0.0/0"
+  }
+
+  # All TCP from SysEleven office
+  rule {
+    from_port   = 1
+    to_port     = 65535
+    ip_protocol = "tcp"
+    cidr        = "151.252.43.0/24"
+  }
+}
