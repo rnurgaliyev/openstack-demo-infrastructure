@@ -3,7 +3,7 @@ require 'vagrant-openstack-provider'
 Vagrant.configure('2') do |config|
   config.ssh.username = 'ubuntu'
   config.vm.define "devstack"
-  config.vm.synced_folder ".", "/vagrant", disabled: true
+  config.vm.synced_folder ".", "/vagrant", type: "rsync"
   config.vm.provider :openstack do |os|
     os.flavor             = 'm1.medium'
     os.openstack_auth_url = "https://keystone.cloud.syseleven.net:5000/v2.0/tokens"
