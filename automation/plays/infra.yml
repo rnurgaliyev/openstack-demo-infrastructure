@@ -1,0 +1,19 @@
+---
+
+# Instance provisioning
+- hosts: infra
+  gather_facts: False
+  become: False
+  roles:
+    - { role: openstack-select-image,  tags: [ "provision" ] }
+    - { role: openstack-instance,      tags: [ "provision" ] }
+    - { role: gcdns,                   tags: [ "provision" ] }
+
+# Instance configuration
+- hosts: infra
+  gather_facts: False
+  become: True
+  roles:
+    - { role: common,                  tags: [ "common" ] }
+    - { role: consul,                  tags: [ "consul" ] }
+    - { role: vault,                   tags: [ "vault" ] }

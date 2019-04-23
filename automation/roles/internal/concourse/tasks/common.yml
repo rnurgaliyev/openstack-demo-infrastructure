@@ -1,0 +1,26 @@
+---
+
+- name: Create directories for Concourse CI
+  file:
+    dest: "{{ item }}"
+    state: directory
+  with_items:
+    - "{{ concourse_ci_install_path }}"
+    - "{{ concourse_ci_install_path }}/bin"
+    - "{{ concourse_ci_install_path }}/etc"
+
+- name: Download Concourse CI
+  get_url:
+    url: "https://github.com/concourse/concourse/releases/download/{{ concourse_ci_version }}/concourse_linux_amd64"
+    checksum: "{{ concourse_ci_checksum }}"
+    dest: "{{ concourse_ci_install_path }}/bin/concourse"
+    mode: 0755
+
+- name: Create Concourse CI system group
+  group:
+    name: "{{ concourse_ci_system_group }}"
+
+- name: Create Concourse CI system user
+  user:
+    name: "{{ concourse_ci_system_user }}"
+    group: "{{ concourse_ci_system_group }}"

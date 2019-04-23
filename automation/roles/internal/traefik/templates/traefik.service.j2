@@ -1,0 +1,9 @@
+[Unit]
+Description=The Cloud Native Edge Router
+
+[Service]
+Restart=on-failure
+ExecStart={{ traefik_install_path }}/bin/traefik -c {{ traefik_install_path }}/etc/traefik.conf
+
+[Install]
+WantedBy=multi-user.target

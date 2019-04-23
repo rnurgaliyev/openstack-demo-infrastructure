@@ -1,0 +1,30 @@
+---
+
+- name: Install Elasticsearch apt key
+  apt_key:
+    url: https://artifacts.elastic.co/GPG-KEY-elasticsearch
+
+- name: Configure Elasticsearch repository
+  apt_repository:
+    repo: "{{ graylog_es_repo }}"
+    state: present
+    filename: elasticsearch
+
+- name: Install Elasticsearch
+  apt:
+    name: elasticsearch
+    state: latest
+    update_cache: yes
+    cache_valid_time: 3600
+  notify: restart elasticsearch
+
+- name: Configure Elasticsearch
+  template:
+    src: elasticsearch.yml
+    dest: /etc/elasticsearch/elasticsearch.yml
+  notify: restart elasticsearch
+
+- name: Enable Elasticsearch
+  service:
+    name: elasticsearch
+    enabled: True

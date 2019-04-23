@@ -1,0 +1,9 @@
+---
+
+postgresql_users:
+  - user: "{{ concourse_ci_db_user }}"
+    password: "{{ concourse_ci_db_password }}"
+
+postgresql_databases:
+  - name: "{{ concourse_ci_db_name }}"
+    owner: "{{ concourse_ci_db_user }}"

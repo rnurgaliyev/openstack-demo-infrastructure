@@ -1,0 +1,18 @@
+---
+
+# Instance provisioning
+- hosts: openvpn
+  gather_facts: False
+  become: False
+  roles:
+    - { role: openstack-select-image,  tags: [ "provision" ] }
+    - { role: openstack-instance,      tags: [ "provision" ] }
+    - { role: gcdns,                   tags: [ "provision" ] }
+
+# Instance configuration
+- hosts: openvpn
+  gather_facts: False
+  become: True
+  roles:
+    - { role: common,                  tags: [ "common" ] }
+    - { role: openvpn,                 tags: [ "openvpn" ] }

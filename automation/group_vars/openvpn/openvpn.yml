@@ -1,0 +1,14 @@
+---
+
+mynetworks:
+  live:
+    - "10.201.1.0 255.255.255.0"
+    - "10.202.1.0 255.255.255.0"
+  staging:
+    - "10.201.2.0 255.255.255.0"
+    - "10.202.2.0 255.255.255.0"
+
+openvpn_clients:
+  - rnurgaliyev
+
+openvpn_routes: "{{ mynetworks[environment_name] }}"

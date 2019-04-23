@@ -1,0 +1,11 @@
+[Unit]
+Description=Concourse CI web process (ATC and TSA)
+
+[Service]
+User={{ concourse_ci_system_user }}
+Restart=on-failure
+EnvironmentFile={{ concourse_ci_install_path }}/etc/web-environment
+ExecStart={{ concourse_ci_install_path }}/bin/concourse web
+
+[Install]
+WantedBy=multi-user.target

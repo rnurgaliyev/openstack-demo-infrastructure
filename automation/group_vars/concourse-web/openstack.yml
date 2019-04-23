@@ -1,0 +1,4 @@
+---
+
+openstack_instance_flavor: "m1.small"
+openstack_instance_security_groups: [ "concourse_web" ]

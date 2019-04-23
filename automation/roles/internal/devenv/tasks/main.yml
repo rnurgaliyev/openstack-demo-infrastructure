@@ -1,0 +1,8 @@
+---
+
+- name: Install build essentials
+  apt:
+    name: build-essential
+    state: latest
+    update_cache: True
+    cache_valid_time: 3600

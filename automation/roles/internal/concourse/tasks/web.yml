@@ -1,0 +1,42 @@
+---
+
+- name: Install web systemd service
+  template:
+    src: concourse-web.service.j2
+    dest: "/etc/systemd/system/concourse-web.service"
+  notify:
+    - Reload systemd
+
+- name: Template web environment file
+  template:
+    src: web-environment.j2
+    dest: "{{ concourse_ci_install_path }}/etc/web-environment"
+  notify:
+    - Restart Concourse CI web
+
+- name: Write tsa private key
+  copy:
+    content: "{{ concourse_ci_tsa_private_key }}"
+    dest: "{{ concourse_ci_install_path }}/etc/tsa_host_key"
+    mode: 0640
+    group: "{{ concourse_ci_system_group }}"
+  no_log: True
+  notify:
+    - Restart Concourse CI web
+
+- name: Write session signing private key
+  copy:
+    content: "{{ concourse_ci_tsa_private_key }}"
+    dest: "{{ concourse_ci_install_path }}/etc/session_signing_key"
+    mode: 0640
+    group: "{{ concourse_ci_system_group }}"
+  no_log: True
+  notify:
+    - Restart Concourse CI web
+
+- name: Write authorized worker keys
+  copy:
+    content: "{{ concourse_ci_worker_public_key }}"
+    dest: "{{ concourse_ci_install_path }}/etc/authorized_worker_keys"
+  notify:
+    - Restart Concourse CI web

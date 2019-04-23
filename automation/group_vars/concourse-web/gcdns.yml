@@ -1,0 +1,7 @@
+---
+
+gcdns_extra_records:
+  - record: "{{ concourse_ci_external_hostname }}"
+    value: "{{ os_provisioned_instance.server.public_v4 }}"
+  - record: "{{ concourse_ci_tsa_hostname }}"
+    value: "{{ os_provisioned_instance.server.private_v4 }}"

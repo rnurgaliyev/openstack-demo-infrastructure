@@ -1,0 +1,47 @@
+---
+
+- name: Install MongoDB
+  include_tasks: mongodb.yml
+  when: graylog_mongodb_install
+
+- name: Install Elasticsearch
+  include_tasks: elasticsearch.yml
+  when: graylog_es_install
+
+- name: Download Graylog repository package
+  get_url:
+    url: "{{ graylog_apt_repo_url }}"
+    dest: "/tmp/graylog_repository.deb"
+  when: graylog_apt_repo_install
+
+- name: Install Graylog repository package
+  apt:
+    deb: "/tmp/graylog_repository.deb"
+    state: "installed"
+    dpkg_options: "force-all"
+  when: graylog_apt_repo_install
+  register: graylog_apt_repo_installed
+
+- name: Force update of apt cache
+  apt:
+    update_cache: yes
+  when: graylog_apt_repo_installed.changed
+
+- name: Install Graylog
+  apt:
+    name: graylog-server
+    state: latest
+    update_cache: yes
+    cache_valid_time: 3600
+  notify: restart graylog
+
+- name: Configure Graylog server
+  template:
+    src: graylog-server.conf
+    dest: /etc/graylog/server/server.conf
+  notify: restart graylog
+
+- name: Enable Graylog
+  service:
+    name: graylog-server
+    enabled: True

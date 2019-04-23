@@ -1,0 +1,32 @@
+---
+
+- name: Set host record in Google Cloud DNS
+  connection: local
+  become: False
+  delegate_to: localhost
+  gcdns_record:
+    zone: "{{ gcdns_zone }}"
+    record: "{{ gcdns_record }}"
+    type: A
+    value: "{{ ansible_host }}"
+    ttl: 300
+    credentials_file: "{{ lookup('env', 'GOOGLE_CLOUD_KEYFILE_JSON') }}"
+    service_account_email: "{{ lookup('env', 'GOOGLE_CLOUD_SERVICE_ACCOUNT') }}"
+    project_id: "{{ lookup('env', 'GOOGLE_CLOUD_PROJECT') }}"
+    overwrite: True
+
+- name: Set additional records in Google Cloud DNS
+  connection: local
+  become: False
+  delegate_to: localhost
+  gcdns_record:
+    zone: "{{ gcdns_zone }}"
+    record: "{{ item.record }}"
+    type: "{{ item.type | default('A') }}"
+    value: "{{ item.value }}"
+    ttl: "{{ item.ttl | default('300') }}"
+    credentials_file: "{{ lookup('env', 'GOOGLE_CLOUD_KEYFILE_JSON') }}"
+    service_account_email: "{{ lookup('env', 'GOOGLE_CLOUD_SERVICE_ACCOUNT') }}"
+    project_id: "{{ lookup('env', 'GOOGLE_CLOUD_PROJECT') }}"
+    overwrite: True
+  with_items: "{{ gcdns_extra_records | default([]) }}"

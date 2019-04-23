@@ -1,0 +1,4 @@
+cluster.name: {{ graylog_es_cluster_name }}
+node.name: {{ graylog_es_node_name }}
+network.host: 0.0.0.0
+discovery.zen.ping.unicast.hosts: [{% for node in graylog_nodes %}"{{ node }}"{% if not loop.last %},{% endif %}{% endfor %}]

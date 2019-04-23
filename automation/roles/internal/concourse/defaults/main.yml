@@ -1,0 +1,30 @@
+---
+
+# Database configuration
+concourse_ci_db_host: "localhost"
+concourse_ci_db_name: "atc"
+concourse_ci_db_user: "concourse"
+concourse_ci_db_password: "concourse"
+
+# Installation details
+concourse_ci_version: "v4.2.1"
+concourse_ci_checksum: "sha1:cac29733a866405ef50311248f7407c28ae6989d"
+concourse_ci_install_path: "/opt/concourse-ci"
+concourse_ci_system_user: "concourse"
+concourse_ci_system_group: "concourse"
+
+# Installation role
+concourse_ci_run_web: False
+concourse_ci_run_worker: False
+
+# Keys
+concourse_ci_tsa_public_key: ""
+concourse_ci_tsa_private_key: ""
+concourse_ci_session_signing_public_key: ""
+concourse_ci_session_signing_private_key: ""
+concourse_ci_worker_public_key: ""
+concourse_ci_worker_private_key: ""
+
+# Admin access
+concourse_ci_admin_user: "admin"
+concourse_ci_admin_password: "admin"

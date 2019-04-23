@@ -1,0 +1,35 @@
+---
+
+- name: Install worker systemd service
+  template:
+    src: concourse-worker.service.j2
+    dest: "/etc/systemd/system/concourse-worker.service"
+
+- name: Template worker environment file
+  template:
+    src: worker-environment.j2
+    dest: "{{ concourse_ci_install_path }}/etc/worker-environment"
+  notify:
+    - Restart Concourse CI worker
+
+- name: Write worker private key
+  copy:
+    content: "{{ concourse_ci_worker_private_key }}"
+    dest: "{{ concourse_ci_install_path }}/etc/worker_key"
+    mode: 0640
+    group: "{{ concourse_ci_system_group }}"
+  no_log: True
+  notify:
+    - Restart Concourse CI worker
+
+- name: Write tsa public key
+  copy:
+    content: "{{ concourse_ci_tsa_public_key }}"
+    dest: "{{ concourse_ci_install_path }}/etc/tsa_public_key"
+  notify:
+    - Restart Concourse CI worker
+
+- name: Create working directory for worker
+  file:
+    dest: "{{ concourse_ci_install_path }}/var"
+    state: directory

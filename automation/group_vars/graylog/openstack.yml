@@ -1,0 +1,13 @@
+---
+
+openstack_instance_flavor: "l1.small"
+
+openstack_image_constrains:
+  - field: os_distro
+    operation: match
+    value: ubuntu
+  - field: os_version
+    operation: match
+    value: '16.04'
+
+openstack_instance_image: "{{ openstack_selected_images[0].id }}"

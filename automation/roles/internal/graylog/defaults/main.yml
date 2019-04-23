@@ -1,0 +1,60 @@
+---
+
+# List of nodes in Graylog cluster
+graylog_nodes: "{{ groups['graylog'] }}"
+graylog_apt_repo_install: True
+graylog_apt_repo_url: "https://packages.graylog2.org/repo/packages/graylog-2.4-repository_latest.deb"
+graylog_password_secret: "MPzZlTHT8ZT0cV2lCFiVBrAp3sOyShSxMqVvDvU4dkkm23drx9QwpUYSCIWGALPflMuKKlZhFAk1OJOKvxZoppaDfIt0l3OA"
+graylog_root_password_sha2: "72ab994fa2eb426c051ef59cad617750bfe06d7cf6311285ff79c19c32afd236"
+graylog_rest_transport_uri: "http://graylog001.testing.cloud.tux.kz:9000/api/"
+
+################################################################################
+# MongoDB is used to store Graylog configuration. Replica set and authentication
+# should be configured.
+#
+# Set graylog_mongodb_install to false, to skip MongoDB installation, if you
+# want to do it yourself.
+#
+graylog_mongodb_install: True
+graylog_mongodb_repo: "deb https://repo.mongodb.org/apt/ubuntu xenial/mongodb-org/4.0 multiverse"
+graylog_mongodb_apt_key: "9DA31620334BD75D9DCB49F368818C72E52529D4"
+graylog_mongodb_db_path: "/var/lib/mongodb"
+graylog_mongodb_key_path: "{{ graylog_mongodb_db_path }}/keyfile"
+graylog_mongodb_rs_name: graylog
+# Replication key, can be generated this way:
+# openssl rand -base64 756
+graylog_mongodb_key: |
+  07rHlG1xvApCVBZhLyX1oYTm6jR/bsBQTcfkSC3marN9aycbZ2Mo5vxR79EQkuDJ
+  665L9c9cZY7QNJOScsPxMLVooi1hVOx4X/kAQgtEmSeduzvIcBveMYGdGfnOhjnF
+  SyvExBS8urIx1w007ngbANHgzi9/GGDoTPaXIbd7/9UeirdTDN2HX30BYBhep/xs
+  JwvtT0dFOjttr0iQQF7zP2jKEX87gJ/5IvO9brW22ZivVA1zs5UDE+41MPJ6BEak
+  HaQ2AiqinJLO0JeI6NbWoVllSufgA+C0c0tmB5f/joWN2jRU1kzDnuAox5p7QTy7
+  iJVCPWaTTQ1HirL4Ttu7mXc6XlMXTP3kp/ZlM7FKQdVkfE2ZcwO++kZJjKRnaBvt
+  d7eBPrvPQ9hhl8F60I5o6jHqxd1OwQHlLGR83FS7xKkL8O4JnDFid19NOFLzgapV
+  vEgJy0EeyAUXI9N/HiyGLn0r50G0nyHIgqV1/2+qxnMXg6FAk7ivFTgBietrHMwK
+  hRFpT4IMcVOuW6YE5dMkXWS2iamA9MlfBTm4ldI6J04Ac92gSMgpFm5knzkmgSw3
+  lk4rFRwL9YNVfSytuO+EJPtMCwLDsxveBfjsy90zJxA+wWCmm8RI5DBzhIG5BW0n
+  rLL+EIJokOqqJ07GMPvJDEn01QowcUKMMe2ESoDmnnr/n8ZecNx6GjtFYfj5WyLo
+  LX0G7BMXKpVc7Ub3mjJEjNVl386KQdP7J5KIFiIqHJzoZENkk264pBnboyJon3nR
+  +AJNjhch6wVM7xZAYKHuuqlfbU1/YjVpdQE4YN+L5djAgSI6/QxT9ZeWgNCYRSiY
+  uTcuS7wye2gTaDXRU8TG5hvVs+lfCRufDZrj6yvBPMSu0S2I1Vjkg2pFrY0LPl3Q
+  P2zrb/LMhPG0oIMtWCbSn7XQsR8rmVtiA+HDyCJjwmVfqjLPns5C1fj2c5JPHcgh
+  5JnhX/zWOII8WyMnOeedecsPn/sJtPAHAapeoR9LxKxah9K/
+graylog_mongodb_admin_user: admin
+graylog_mongodb_admin_password: "Dohth7Efuko2ohyogoh7ieta4fieM3ee"
+graylog_mongodb_user: graylog
+graylog_mongodb_password: "fuZoonei3esh6AephohngeegiaQu7eo5"
+################################################################################
+
+
+################################################################################
+# Elasticsearch is used to store all data.
+#
+# Set graylog_es_install to false, to skip Elasticsearch installation, if you 
+# want to do it yourself.
+#
+graylog_es_install: True
+graylog_es_repo: "deb https://artifacts.elastic.co/packages/5.x/apt stable main"
+graylog_es_cluster_name: "graylog"
+graylog_es_node_name: "{{ inventory_hostname }}"
+################################################################################

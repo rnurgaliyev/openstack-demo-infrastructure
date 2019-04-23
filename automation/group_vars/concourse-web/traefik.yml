@@ -1,0 +1,37 @@
+---
+
+traefik_configuration:
+  entryPoints:
+    - name: http
+      address: ":80"
+      redirect:
+        entrypoint: "https"
+    - name: https
+      address: ":443"
+      tls: True
+
+  acme:
+    email: "impleman@gmail.com"
+    storage: "{{ traefik_install_path }}/etc/acme.json"
+    caServer: "https://acme-v02.api.letsencrypt.org/directory"
+    entryPoint: "https"
+    httpChallenge:
+      entryPoint: "http"
+    domains:
+      - main: "ci.live.cloud.tux.kz"
+
+  file_provider:
+
+    frontends:
+      - name: concourse
+        entryPoints: [ "http", "https" ]
+        backend: "concourse"
+        routes:
+          - name: route1
+            rule: "Host: ci.live.cloud.tux.kz"
+
+    backends:
+      - name: concourse
+        servers:
+          - name: concourse-web
+            url: "http://localhost:8080"

@@ -1,0 +1,11 @@
+[Unit]
+Description=Concourse CI worker process
+
+[Service]
+User=root
+Restart=on-failure
+EnvironmentFile={{ concourse_ci_install_path }}/etc/worker-environment
+ExecStart={{ concourse_ci_install_path }}/bin/concourse worker
+
+[Install]
+WantedBy=multi-user.target

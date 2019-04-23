@@ -1,0 +1,4 @@
+---
+
+gcdns_zone: "{{ environment_zone }}"
+gcdns_record: "{{ inventory_hostname }}"

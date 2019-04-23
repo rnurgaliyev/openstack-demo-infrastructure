@@ -1,0 +1,5 @@
+---
+
+openstack_instance_flavor: "m1.tiny"
+openstack_instance_public_ip: True
+openstack_instance_security_groups: [ "openvpn" ]

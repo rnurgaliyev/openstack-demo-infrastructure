@@ -1,0 +1,16 @@
+---
+
+openstack_instance_flavor: "m1.small"
+openstack_instance_key_name: "rnurgaliyev"
+openstack_instance_network: "{{ environment_name }}"
+openstack_instance_security_groups: [ "internal" ]
+
+openstack_image_constrains:
+  - field: os_distro
+    operation: match
+    value: ubuntu
+  - field: os_version
+    operation: match
+    value: '18.04'
+
+openstack_instance_image: "{{ openstack_selected_images[0].id }}"

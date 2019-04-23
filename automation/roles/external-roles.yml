@@ -1,0 +1,23 @@
+- src: https://github.com/rnurgaliyev/ansible-openvpn.git
+  name: openvpn
+  version: master
+
+- src: https://github.com/rnurgaliyev/ansible-vault.git
+  name: vault
+  version: master
+
+- src: https://github.com/rnurgaliyev/ansible-consul.git
+  name: consul
+  version: master
+
+- src: https://github.com/rnurgaliyev/ansible-openstack-instance.git
+  name: openstack-instance
+  version: master
+
+- src: https://github.com/rnurgaliyev/ansible-openstack-select-image.git
+  name: openstack-select-image
+  version: master
+
+- src: https://github.com/ansiblebit/oracle-java.git
+  name: oracle-java
+  version: 6.22.6

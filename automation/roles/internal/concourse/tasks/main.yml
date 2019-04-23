@@ -1,0 +1,10 @@
+- name: Execute common tasks
+  include_tasks: common.yml
+
+- name: Configure Concourse CI web
+  when: concourse_ci_run_web
+  include_tasks: web.yml
+
+- name: Configure Concourse CI worker
+  when: concourse_ci_run_worker
+  include_tasks: worker.yml

@@ -1,0 +1,48 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+# This vagrant file requires "vagrant-openstack-provider" plugin.
+# Install it with "vagrant plugin install vagrant-openstack-provider" command.
+
+require 'vagrant-openstack-provider'
+
+Vagrant.configure('2') do |config|
+
+  # Default OpenStack Configuration
+  config.vm.provider :openstack do |os|
+    os.flavor             = 'm1.tiny'
+    os.username           = ENV['OS_USERNAME']
+    os.password           = ENV['OS_PASSWORD']
+    os.region             = ENV['OS_REGION_NAME']
+    os.tenant_name        = ENV['OS_PROJECT_NAME']
+    os.security_groups    = [ 'internal' ]
+    os.networks           = [ 'staging' ]
+    os.openstack_auth_url = "https://keystone.cloud.syseleven.net:5000/v2.0/tokens"
+  end
+
+  # Disable folder sync
+  config.vm.synced_folder ".", "/vagrant", disabled: true
+  config.vm.boot_timeout = 600
+ 
+  config.vm.define "lab001" do |server|
+    server.vm.provider :openstack do |os, override|
+      os.image = Regexp.new("Ubuntu Bionic 18.04 \\([0-9\-]+\\)", Regexp::IGNORECASE)
+      override.ssh.username = "ubuntu"
+    end
+  end
+
+  config.vm.define "lab002" do |server|
+    server.vm.provider :openstack do |os, override|
+      os.image = Regexp.new("Debian Stretch \\([0-9\-]+\\)", Regexp::IGNORECASE)
+      override.ssh.username = "debian"
+    end
+  end
+
+  config.vm.define "lab003" do |server|
+    server.vm.provider :openstack do |os, override|
+      os.image = Regexp.new("Ubuntu Bionic 18.04 \\([0-9\-]+\\)", Regexp::IGNORECASE)
+      override.ssh.username = "ubuntu"
+    end
+  end
+
+end

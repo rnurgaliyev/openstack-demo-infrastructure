@@ -1,0 +1,22 @@
+---
+
+- name: Allow 'sudo' group to have passwordless sudo
+  lineinfile:
+    dest: /etc/sudoers
+    state: present
+    regexp: '^%sudo'
+    line: '%sudo ALL=(ALL) NOPASSWD: ALL'
+    validate: 'visudo -cf %s'
+
+- name: Configure unix users
+  user:
+    name: "{{ item.name }}"
+    shell: "{{ item.shell | default(omit) }}"
+    groups: "{{ item.groups | default(omit) }}"
+  with_items: "{{ common_users }}"
+
+- name: Configure authorized keys for unix users
+  authorized_key:
+    user: "{{ item.name }}"
+    key: "{{ item.ssh_key }}"
+  with_items: "{{ common_users }}"

@@ -1,0 +1,4 @@
+---
+
+openstack_instance_flavor: "l1.medium"
+openstack_instance_security_groups: [ "concourse_worker" ]

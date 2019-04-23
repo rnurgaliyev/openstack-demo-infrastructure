@@ -1,0 +1,62 @@
+{% if traefik_configuration.entryPoints is defined %}
+[entryPoints]
+{% for entrypoint in traefik_configuration.entryPoints %}
+  [entryPoints.{{ entrypoint.name }}]
+  address = "{{ entrypoint.address }}"
+{% if entrypoint.redirect is defined %}
+    [entryPoints.{{ entrypoint.name }}.redirect]
+    entryPoint = "{{ entrypoint.redirect.entrypoint }}"
+{% endif %}
+{% if entrypoint.tls is defined %}
+    [entryPoints.{{ entrypoint.name }}.tls]
+{% endif %}
+{% endfor %}
+{% endif %}
+
+{% if traefik_configuration.acme is defined %}
+[acme]
+email = "{{ traefik_configuration.acme.email }}"
+storage = "{{ traefik_configuration.acme.storage }}"
+caServer = "{{ traefik_configuration.acme.caServer }}"
+entryPoint = "{{ traefik_configuration.acme.entryPoint }}"
+{% if traefik_configuration.acme.httpChallenge is defined %}
+  [acme.httpChallenge]
+  entryPoint = "{{ traefik_configuration.acme.httpChallenge.entryPoint }}"
+{% endif %}
+{% if traefik_configuration.acme.domains is defined %}
+[[acme.domains]]
+{% for domain in traefik_configuration.acme.domains %}
+  main = "{{ domain.main }}"
+{% endfor %}
+{% endif %}
+{% endif %}
+
+{% if traefik_configuration.file_provider is defined %}
+[file]
+
+{% if traefik_configuration.file_provider.frontends is defined %}
+[frontends]
+{% for frontend in traefik_configuration.file_provider.frontends %}
+  [frontends.{{ frontend.name }}]
+  entryPoints = [{% for ep in frontend.entryPoints %}"{{ ep }}"{% if not loop.last %},{% endif %}{% endfor %}]
+  backend = "{{ frontend.backend }}"
+{% if frontend.routes is defined %}
+{% for route in frontend.routes %}
+    [frontends.{{ frontend.name }}.routes.{{ route.name }}]
+    rule = "{{ route.rule }}"
+{% endfor %}
+{% endif %}
+{% endfor %}
+{% endif %}
+
+{% if traefik_configuration.file_provider.backends is defined %}
+[backends]
+{% for backend in traefik_configuration.file_provider.backends %}
+  [backends.{{ backend.name }}]
+{% for server in backend.servers %}
+    [backends.{{ backend.name }}.servers.{{ server.name }}]
+    url = "{{ server.url }}"
+{% endfor %}
+{% endfor %}
+{% endif %}
+{% endif %}

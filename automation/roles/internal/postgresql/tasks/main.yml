@@ -1,0 +1,27 @@
+---
+
+- name: Install PostgreSQL
+  apt:
+    name: "{{ item }}"
+    update_cache: True
+    cache_valid_time: 3600
+  with_items:
+    - postgresql
+    - postgresql-contrib
+    - python-psycopg2
+
+- name: Configure PostgreSQL users
+  become_user: postgres
+  postgresql_user:
+    name: "{{ item.user }}"
+    password: "{{ item.password }}"
+    encrypted: True
+  with_items: "{{ postgresql_users }}"
+  no_log: True
+
+- name: Configure PostgreSQL databases
+  become_user: postgres
+  postgresql_db:
+    name: "{{ item.name }}"
+    owner: "{{ item.owner }}"
+  with_items: "{{ postgresql_databases }}"

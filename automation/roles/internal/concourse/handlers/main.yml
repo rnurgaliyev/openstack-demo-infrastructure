@@ -1,0 +1,14 @@
+---
+
+- name: Restart Concourse CI web
+  service:
+    name: concourse-web
+    state: restarted
+
+- name: Restart Concourse CI worker
+  service:
+    name: concourse-worker
+    state: restarted
+
+- name: Reload systemd
+  systemd: daemon_reload=yes

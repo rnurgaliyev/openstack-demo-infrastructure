@@ -1,0 +1,155 @@
+---
+
+- name: Install MongoDB apt key
+  apt_key:
+    keyserver: keyserver.ubuntu.com
+    id: "{{ graylog_mongodb_apt_key }}"
+
+- name: Configure MongoDB repository
+  apt_repository:
+    repo: "{{ graylog_mongodb_repo }}"
+    state: present
+    filename: mongodb
+
+- name: Install MongoDB
+  apt:
+    name: mongodb-org
+    state: latest
+    update_cache: yes
+    cache_valid_time: 3600
+  notify: restart mongod
+
+- name: Create MongoDB data directory
+  file:
+    dest: "{{ graylog_mongodb_db_path }}"
+    state: directory
+    owner: mongodb
+    group: mongodb
+  notify: restart mongod
+
+- name: Configure MongoDB
+  template:
+    src: mongod.conf
+    dest: /etc/mongod.conf
+  notify: restart mongod
+
+- name: Install MongoDB replication key
+  copy:
+    content: "{{ graylog_mongodb_key }}"
+    dest: "{{ graylog_mongodb_key_path }}"
+    mode: 0400
+    owner: mongodb
+    group: mongodb
+  notify: restart mongod
+
+- name: Enable MongoDB
+  service:
+    name: mongod
+    enabled: True
+
+- name: Make sure MongoDB is running before going further
+  meta: flush_handlers
+
+- name: Wait for MongoDB to open TCP port
+  wait_for:
+    port: 27017
+    delay: 5
+
+- name: Give some time to MongoDB to boot completely
+  wait_for:
+    timeout: 5
+
+# Try to login with admin user first, then without any credentials.
+# Unsuccessful login attempt will be logged and used later to create admin user
+- name: Getting replica set status
+  shell: >
+    mongo --quiet -u"{{ graylog_mongodb_admin_user }}" -p"{{ graylog_mongodb_admin_password }}" --eval "rs.status()" admin ||
+    mongo --quiet --eval "rs.status()" admin
+  no_log: True
+  register: mongodb_rs_status
+  changed_when: False
+
+- name: Template replica set initializer
+  template:
+    src: init_replicaset.js
+    dest: /tmp/init_replicaset.js
+  when:
+    - "'NotYetInitialized' in mongodb_rs_status.stdout"
+
+- name: Configure replica set
+  shell: mongo admin /tmp/init_replicaset.js
+  no_log: True
+  run_once: True
+  when:
+    - "'NotYetInitialized' in mongodb_rs_status.stdout"
+
+# STATE LOOP GOES HERE
+- name: Wait until replica set is operational
+  shell: mongo --eval "rs.status().ok" --quiet admin
+  register: mongodb_updated_rs_status
+  until: mongodb_updated_rs_status.stdout=="1"
+  changed_when: False
+  retries: 10
+  delay: 3
+  when:
+    - "'NotYetInitialized' in mongodb_rs_status.stdout"
+
+# STATE LOOP GOES HERE
+- name: Wait until master node is elected
+  shell: mongo --eval "rs.status().members" --quiet admin
+  register: mongodb_rs_members
+  until: "'\"stateStr\" : \"PRIMARY\"' in mongodb_rs_members.stdout"
+  changed_when: False
+  retries: 10
+  delay: 3
+  when:
+    - "'NotYetInitialized' in mongodb_rs_status.stdout"
+
+# By this point replica set should be 100% operational
+
+- name: Get master node in replica set
+  shell: mongo --eval "rs.isMaster().ismaster" --quiet admin
+  register: mongodb_master_node
+  changed_when: False
+
+- name: Create MongoDB admin user
+  shell: > 
+    mongo --eval "db.getSiblingDB('admin').createUser(
+    {
+      user: '{{ graylog_mongodb_admin_user }}', pwd: '{{ graylog_mongodb_admin_password }}',
+      roles: [ 
+        { role: 'userAdminAnyDatabase', db: 'admin' },
+        { role: 'clusterAdmin', db: 'admin' }
+      ]
+    }
+    )" admin
+  no_log: True
+  when: 
+    - "'Authentication failed' in mongodb_rs_status.stdout"
+    - "'true' in mongodb_master_node.stdout"
+
+- name: Check if graylog user can login
+  shell: >
+    mongo -u"{{ graylog_mongodb_user }}" -p"{{ graylog_mongodb_password }}"
+    --eval "rs.status()" --quiet graylog
+  register: mongodb_check_graylog_user
+  failed_when: False
+  changed_when: False
+  no_log: True
+
+- name: Create MongoDB graylog user in Graylog database
+  shell: > 
+    mongo -u"{{ graylog_mongodb_admin_user }}" -p"{{ graylog_mongodb_admin_password }}"
+    --eval "db.getSiblingDB('graylog').createUser(
+    {
+      user: '{{ graylog_mongodb_user }}', pwd: '{{ graylog_mongodb_password }}',
+      roles: [ 
+        { role: 'dbAdmin', db: 'graylog' },
+        { role: 'readWrite', db: 'graylog' }
+      ]
+    }
+    )" admin
+  no_log: True
+  when: 
+    - "'Authentication failed' in mongodb_check_graylog_user.stdout"
+    - "'true' in mongodb_master_node.stdout"

@@ -1,0 +1,13 @@
+---
+
+- name: Install fail2ban
+  apt:
+    update_cache: yes
+    cache_valid_time: 3600
+    name: fail2ban
+    state: latest
+
+- name: Ensure that fail2ban service is enabled
+  service:
+    name: fail2ban
+    enabled: True
