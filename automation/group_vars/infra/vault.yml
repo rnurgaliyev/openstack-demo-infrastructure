@@ -1,0 +1,19 @@
+---
+
+vault_configuration:
+  - name: server
+    configuration:
+      ui: True
+      storage:
+        consul:
+          address: "127.0.0.1:8500"
+          path: "vault/"
+      listener:
+        - tcp:
+            address: "127.0.0.1:8200"
+            tls_disable: 1
+        - tcp:
+            address: "{{ ansible_default_ipv4.address }}:8200"
+            tls_disable: 1
+      api_addr: "http://{{ ansible_default_ipv4.address }}:8200"
+      cluster_addr: "http://{{ ansible_default_ipv4.address }}:8201"
