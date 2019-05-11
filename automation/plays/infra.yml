@@ -13,7 +13,6 @@
 - hosts: infra
   gather_facts: True
   become: True
-  serial: 1
   roles:
     - { role: common,                  tags: [ "common" ] }
     - { role: consul,                  tags: [ "consul" ] }
