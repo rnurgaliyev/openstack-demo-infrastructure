@@ -4,7 +4,7 @@ module "base_configuration_cbk" {
   source = "./modules/base-configuration"
 
   providers = {
-    "openstack" = "openstack.cbk"
+    openstack = openstack.cbk
   }
 }
 
@@ -14,6 +14,6 @@ module "base_networking_cbk" {
   staging_network = "10.201.2.0/24"
 
   providers = {
-    "openstack" = "openstack.cbk"
+    openstack = openstack.cbk
   }
 }

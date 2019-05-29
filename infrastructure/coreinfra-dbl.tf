@@ -4,7 +4,7 @@ module "base_configuration_dbl" {
   source = "./modules/base-configuration"
 
   providers = {
-    "openstack" = "openstack.dbl"
+    openstack = openstack.dbl
   }
 }
 
@@ -14,6 +14,6 @@ module "base_networking_dbl" {
   staging_network = "10.202.2.0/24"
 
   providers = {
-    "openstack" = "openstack.dbl"
+    openstack = openstack.dbl
   }
 }
