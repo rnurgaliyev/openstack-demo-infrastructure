@@ -1,11 +1,11 @@
 module "network_live" {
-  source  = "network"
+  source  = "./network"
   name    = "live"
   network = "${var.live_network}"
 }
 
 module "network_staging" {
-  source  = "network"
+  source  = "./network"
   name    = "staging"
   network = "${var.staging_network}"
 }

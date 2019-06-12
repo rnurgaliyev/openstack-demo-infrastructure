@@ -1,0 +1,42 @@
+---
+
+- name: Make sure that systemd-resolved is disabled and stopped
+  service:
+    name: systemd-resolved
+    enabled: False
+    state: stopped
+
+- name: Check if resolv.conf is a symlink
+  stat:
+    path: "/etc/resolv.conf"
+  register: resolvconf
+
+- name: Remove resolv.conf symling
+  file:
+    path: "/etc/resolv.conf"
+    state: absent
+  when: resolvconf.stat.islink is defined and links.stat.islnk
+
+- name: Configure resolv.conf
+  copy:
+    content: |
+      nameserver 127.0.0.1
+      nameserver 1.1.1.1
+    dest: "/etc/resolv.conf"
+
+- name: Install dnsmasq
+  apt:
+    pkg: dnsmasq
+    state: present
+    update_cache: True
+    cache_valid_time: 3600
+  notify:
+    - Restart dnsmasq
+
+- name: Configure consul in dnsmasq
+  copy:
+    content: |
+      server=/consul/127.0.0.1#8600
+    dest: "/etc/dnsmasq.d/consul"
+  notify:
+    - Restart dnsmasq
