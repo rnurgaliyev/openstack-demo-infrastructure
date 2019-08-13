@@ -4,29 +4,31 @@
   connection: local
   become: False
   delegate_to: localhost
-  gcdns_record:
-    zone: "{{ gcdns_zone }}"
-    record: "{{ gcdns_record }}"
+  gcp_dns_resource_record_set:
+    managed_zone:
+      name: "{{ gcdns_managed_zone }}"
+      dnsName: "{{ gcdns_managed_zone_dns_name }}"
+    name: "{{ gcdns_record_name }}"
     type: A
-    value: "{{ ansible_host }}"
+    target: "{{ ansible_host }}"
     ttl: 300
-    credentials_file: "{{ lookup('env', 'GOOGLE_CLOUD_KEYFILE_JSON') }}"
-    service_account_email: "{{ lookup('env', 'GOOGLE_CLOUD_SERVICE_ACCOUNT') }}"
-    project_id: "{{ lookup('env', 'GOOGLE_CLOUD_PROJECT') }}"
-    overwrite: True
+    auth_kind: serviceaccount
+    project: "{{ lookup('env', 'GOOGLE_CLOUD_PROJECT') }}"
+    service_account_file: "{{ lookup('env', 'GOOGLE_CLOUD_KEYFILE_JSON') }}"
 
 - name: Set additional records in Google Cloud DNS
   connection: local
   become: False
   delegate_to: localhost
-  gcdns_record:
-    zone: "{{ gcdns_zone }}"
-    record: "{{ item.record }}"
+  gcp_dns_resource_record_set:
+    managed_zone:
+      name: "{{ gcdns_managed_zone }}"
+      dnsName: "{{ gcdns_managed_zone_dns_name }} "
+    name: "{{ item.record_name }}"
     type: "{{ item.type | default('A') }}"
-    value: "{{ item.value }}"
+    target: "{{ item.value }}"
     ttl: "{{ item.ttl | default('300') }}"
-    credentials_file: "{{ lookup('env', 'GOOGLE_CLOUD_KEYFILE_JSON') }}"
-    service_account_email: "{{ lookup('env', 'GOOGLE_CLOUD_SERVICE_ACCOUNT') }}"
-    project_id: "{{ lookup('env', 'GOOGLE_CLOUD_PROJECT') }}"
-    overwrite: True
+    auth_kind: serviceaccount
+    project: "{{ lookup('env', 'GOOGLE_CLOUD_PROJECT') }}"
+    service_account_file: "{{ lookup('env', 'GOOGLE_CLOUD_KEYFILE_JSON') }}"
   with_items: "{{ gcdns_extra_records | default([]) }}"

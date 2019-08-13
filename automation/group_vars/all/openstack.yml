@@ -14,3 +14,5 @@ openstack_image_constrains:
     value: '18.04'
 
 openstack_instance_image: "{{ openstack_selected_images[0].id }}"
+
+openstack_instance_install_python: False
