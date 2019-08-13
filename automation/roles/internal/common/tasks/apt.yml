@@ -6,6 +6,7 @@
     state: latest
     update_cache: yes
     cache_valid_time: 3600
+    force_apt_get: True
   with_items: "{{ common_apt_packages }}"
 
 - name: Install apt-cron
@@ -14,3 +15,4 @@
     state: latest
     update_cache: yes
     cache_valid_time: 3600
+    force_apt_get: True

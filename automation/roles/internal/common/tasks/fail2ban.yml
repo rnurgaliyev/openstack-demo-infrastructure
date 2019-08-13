@@ -6,6 +6,7 @@
     cache_valid_time: 3600
     name: fail2ban
     state: latest
+    force_apt_get: True
 
 - name: Ensure that fail2ban service is enabled
   service:
