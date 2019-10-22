@@ -1,7 +1,7 @@
 ---
 
 # Instance provisioning
-- hosts: openvpn
+- hosts: vpn
   gather_facts: False
   become: False
   roles:
@@ -10,9 +10,9 @@
     - { role: gcdns,                   tags: [ "provision" ] }
 
 # Instance configuration
-- hosts: openvpn
-  gather_facts: False
+- hosts: vpn
+  gather_facts: True
   become: True
   roles:
     - { role: common,                  tags: [ "common" ] }
-    - { role: openvpn,                 tags: [ "openvpn" ] }
+    - { role: wireguard,               tags: [ "wireguard" ] }

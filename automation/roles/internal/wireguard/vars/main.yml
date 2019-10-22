@@ -1,0 +1,5 @@
+---
+
+wireguard_configuration_directory_path: "/etc/wireguard"
+wireguard_private_key_path: "{{ wireguard_configuration_directory_path }}/private.key"
+wireguard_listen_port: 51820

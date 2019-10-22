@@ -1,0 +1,19 @@
+[NetDev]
+Name=wg0
+Kind=wireguard
+
+[WireGuard]
+PrivateKey={{ wireguard_private_key }}
+ListenPort={{ wireguard_listen_port }}
+
+{% for peer in wireguard_peers %}
+[WireGuardPeer]
+PublicKey={{ peer.public_key }}
+{% for cidr in peer.allowed_ips %}
+AllowedIPs={{ cidr }}
+{% endfor %}
+{% if peer.endpoint is defined %}
+Endpoint={{ peer.endpoint }}
+{% endif %}
+
+{% endfor %}

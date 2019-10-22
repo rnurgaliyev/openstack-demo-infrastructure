@@ -1,0 +1,99 @@
+---
+
+- name: Add WireGuard repository
+  apt_repository:
+    repo: "ppa:wireguard/wireguard"
+    state: present
+    update_cache: True
+
+- name: Install dependencies
+  apt:
+    name:
+      - "iptables-persistent"
+      - "linux-headers-{{ ansible_kernel }}"
+      - "software-properties-common"
+    state: latest
+    update_cache: True
+    cache_valid_time: 3600
+    force_apt_get: True
+
+- name: Install WireGuard
+  apt:
+    name:
+      - "wireguard-dkms"
+      - "wireguard-tools"
+    state: latest
+    update_cache: True
+    cache_valid_time: 3600
+    force_apt_get: True
+
+- name: Ensure configuration directory exists
+  file:
+    path: "{{ wireguard_configuration_directory_path }}"
+    state: directory
+
+- name: Check if private key exists
+  stat:
+    path: "{{ wireguard_private_key_path }}"
+  register: wireguard_private_key_stat
+
+- name: Generate and write private key
+  when: not wireguard_private_key_stat.stat.exists
+  block:
+    - name: Generate private key
+      shell: >
+        wg genkey
+      register: wireguard_genkey
+    - name: Save private key
+      copy:
+        content: "{{ wireguard_genkey.stdout }}"
+        dest: "{{ wireguard_private_key_path }}"
+        mode: 0600
+    - name: Set private key fact
+      set_fact:
+        wireguard_private_key: "{{ wireguard_genkey.stdout }}"
+
+- name: Read private key from remote
+  when: wireguard_private_key_stat.stat.exists
+  block:
+    - name: Read private key
+      shell: >
+        cat {{ wireguard_private_key_path }}
+      changed_when: False
+      register: wireguard_readkey
+    - name: Set private key fact
+      set_fact:
+        wireguard_private_key: "{{ wireguard_readkey.stdout }}"
+
+- name: Install systemd netdev file
+  template:
+    src: "wg0.netdev"
+    dest: "/etc/systemd/network/wg0.netdev"
+  register: wireguard_netdev
+
+- name: Install systemd network file
+  template:
+    src: "wg0.network"
+    dest: "/etc/systemd/network/wg0.network"
+  register: wireguard_network
+
+- name: Restart systemd-networkd if necessary
+  systemd:
+    name: systemd-networkd
+    state: restarted
+  when: wireguard_netdev.changed or wireguard_network.changed
+
+- name: Enable IPv4 forwarding
+  sysctl:
+    name: net.ipv4.ip_forward
+    value: "1"
+    sysctl_set: True
+    state: present
+    reload: True
+
+- name: Enable NAT from WireGuard network
+  iptables:
+    table: nat
+    chain: POSTROUTING
+    jump: MASQUERADE
+    source: "{{ wireguard_address }}"

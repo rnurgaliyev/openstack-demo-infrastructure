@@ -1,7 +1,3 @@
-- src: https://github.com/rnurgaliyev/ansible-openvpn.git
-  name: openvpn
-  version: master
-
 - src: https://github.com/rnurgaliyev/ansible-vault.git
   name: vault
   version: master
