@@ -1,6 +1,6 @@
-resource "openstack_compute_secgroup_v2" "openvpn" {
-  name        = "openvpn"
-  description = "Security Group for OpenVPN Instances"
+resource "openstack_compute_secgroup_v2" "vpn" {
+  name        = "vpn"
+  description = "Security Group for VPN Instances"
 
   rule {
     from_port   = 22
@@ -10,8 +10,8 @@ resource "openstack_compute_secgroup_v2" "openvpn" {
   }
 
   rule {
-    from_port   = 1194
-    to_port     = 1194
+    from_port   = 51820
+    to_port     = 51820
     ip_protocol = "udp"
     cidr        = "0.0.0.0/0"
   }

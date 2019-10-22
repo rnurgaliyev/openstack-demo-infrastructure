@@ -1,0 +1,8 @@
+---
+
+wireguard_address: "10.128.240.1/24"
+
+wireguard_peers:
+  - public_key: "Rq0ushx7OB1DgID6F06m9TlRvnt82t3oHnWGwAzXCng="
+    allowed_ips:
+      - "10.128.240.10/24"

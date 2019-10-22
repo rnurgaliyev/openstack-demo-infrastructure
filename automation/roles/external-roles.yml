@@ -1,5 +1,5 @@
-- src: https://github.com/rnurgaliyev/ansible-openvpn.git
-  name: openvpn
+- src: https://github.com/rnurgaliyev/ansible-wireguard.git
+  name: wireguard
   version: master
 
 - src: https://github.com/rnurgaliyev/ansible-vault.git
